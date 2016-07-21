@@ -1,6 +1,10 @@
 # coding: utf-8
+version='filefiller.py ver2.0'
 '''
-## filefiller.py ver1.0
+
+__UPDATE2.0__
+makefileの機能追加
+
 
 __UPDATE1.0__
 First commit
@@ -46,6 +50,18 @@ datetimeObjectHourmin=[int(i.strftime('%H%M')) for i in datetimeObject]   #要�
 
 
 
+def makefile(filename):
+	fullname=directory+filename+extention
+	with open(fullname,mode='w') as f:
+		c='# <This is DUMMY DATA made by %s>\n'% version
+		for i in range(1001):
+			c+=str(i).rjust(6)+('-1000.00'.rjust(11))*3+'\n'
+		c+='# <eof>\n'
+		f.write(c)
+
+
+
+
 def chunks(l, n):
 	'''
 	l:リスト
@@ -69,12 +85,12 @@ def makeMiddlePoint():
 	'''リスト内2個組で差分が6分未満になるように要素を作製'''
 	for two in chunks(datetimeObject,2):   #リストの2組ずつgenerate
 		if two[-1]-two[0]>=d.timedelta(minutes=6):
-			print(two[-1],two[0],two[-1]-two[0])
+			print(two[0],two[-1],two[-1]-two[0])
 			where=datetimeObject.index(two[-1])
 			time=two[0]+d.timedelta(minutes=5)
 			datetimeObject.insert(where,time)   #調べた2くくりの要素間に+5分した要素を追加
 			print('Inserted',time,'next to',two[0])
-		# elif two[-1]-two[0]<d.timedelta(minutes=4):break
+			makefile(time.strftime('%Y%m%d_%H%M%S'))
 	print('\nInsert element End\n')
 
 
@@ -91,6 +107,7 @@ def makeStartPoint():
 			break
 		datetimeObject.insert(0,start-d.timedelta(minutes=5))   #リストの最初に5分前の値をリストに格納
 		print('Inserted',datetimeObject[0])
+		makefile(datetimeObject[0].strftime('%Y%m%d_%H%M%S'))
 
 
 def makeStopPoint():
@@ -103,17 +120,17 @@ def makeStopPoint():
 			break
 		datetimeObject.append(stop+d.timedelta(minutes=5))   #リストの最初に5分前の値をリストに格納
 		print('Appended',datetimeObject[-1])
-
+		makefile(datetimeObject[-1].strftime('%Y%m%d_%H%M%S'))
 
 
 
 
 # __MAIN__________________________
-print('Before',datetimeObject,len(datetimeObject))
+print('Before\nNumber of Files is',len(datetimeObject))
 makeStartPoint()
 makeMiddlePoint()
 makeStopPoint()
-print('After',datetimeObject,len(datetimeObject))
+print('After\nNumber of Files is',len(datetimeObject))
 
 
 
