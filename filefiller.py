@@ -1,6 +1,10 @@
 # coding: utf-8
-version='filefiller.py ver3.1'
+version='filefiller.py ver3.2'
 '''
+
+__UPDATE3.2__
+外部ファイルから呼び出せるようにMAINも関数化
+
 
 __UPDATE3.1__
 一番最後にプリントしているdatetimeObjectはディレクトリ上のファイルをgrepしたものではないので
@@ -38,8 +42,10 @@ datetimeObjectが5分間隔に並ぶように以下を行う
 	makeStopPoint()
 
 __TODO__
-makefileのテスト
-実装
+makeMiddlePoint()が不完全
+	最後から2番目以前のデータを2以上消したときに288ファイルに埋めてくれない
+	for文の繰り返しがいけないと思う
+	while文にすべきか
 '''
 
 
@@ -59,14 +65,13 @@ def grepfile(directory,extention):
 	return datetimeObject
 
 
-def makefile(filename):
-		fullname=directory+filename+extention
-		with open(fullname,mode='w') as f:
-			c='# <This is DUMMY DATA made by %s>\n'% version
-			for i in range(1001):
-				c+=str(i).rjust(6)+('-1000.00'.rjust(11))*3+'\n'
-			c+='# <eof>\n'
-			f.write(c)
+def makefile(fullpath):
+	with open(fullpath,mode='w') as f:
+		c='# <This is DUMMY DATA made by %s>\n'% version
+		for i in range(1001):
+			c+=str(i).rjust(6)+('-1000.00'.rjust(11))*3+'\n'
+		c+='# <eof>\n'
+		f.write(c)
 
 
 
@@ -89,7 +94,7 @@ print(list(chunks(ll,2)))
 
 
 
-def makeMiddlePoint():
+def makeMiddlePoint(datetimeObject):
 	'''リスト内2個組で差分が6分未満になるように要素を作製'''
 	for two in chunks(datetimeObject,2):   #リストの2組ずつgenerate
 		if two[-1]-two[0]>=d.timedelta(minutes=6):
@@ -97,7 +102,7 @@ def makeMiddlePoint():
 			where=datetimeObject.index(two[-1])
 			time=two[0]+d.timedelta(minutes=5)
 			datetimeObject.insert(where,time)   #調べた2くくりの要素間に+5分した要素を追加
-			print('Inserted',time,'next to',two[0])
+			print('Inserted',time)
 			yield time.strftime('%Y%m%d_%H%M%S')
 	print('\nmakeMiddlePoint End\n')
 
@@ -105,7 +110,7 @@ def makeMiddlePoint():
 
 
 
-def makeStartPoint():
+def makeStartPoint(datetimeObject):
 	'''始点要素の作製'''
 	while True :
 		start=datetimeObject[0]   #始点を探す
@@ -118,7 +123,7 @@ def makeStartPoint():
 		yield datetimeObject[0].strftime('%Y%m%d_%H%M%S')
 
 
-def makeStopPoint():
+def makeStopPoint(datetimeObject):
 	'''終点要素の作製'''
 	while True :
 		stop=datetimeObject[-1]   #始点を探す
@@ -134,23 +139,27 @@ def makeStopPoint():
 
 
 # __MAIN__________________________
-directory='C:/home/gnuplot/SAout/160717/'
-extention='.txt'
-datetimeObject=grepfile(directory,extention)
-print('Before\nNumber of Files is',len(datetimeObject))
-print('-'*20)
-for i in makeMiddlePoint():makefile(i)
-print('-'*20)
-for i in makeStartPoint():makefile(i)
-print('-'*20)
-for i in makeStopPoint():makefile(i)
-print('-'*20)
-# datetimeObject=grepfile(directory='C:/home/gnuplot/SAout/160717/',extention='.txt')
-print('After\nNumber of Files is',len(datetimeObject))
+
+def filefiller(directory,extention='.txt'):
+	datetimeObject=grepfile(directory,extention)
+	print('Before:Number of Files is',len(datetimeObject))   #Check number of files
+	print('-'*20)
+	for i in makeMiddlePoint(datetimeObject):makefile(directory+i+extention)
+	print('-'*20)
+	for i in makeStartPoint(datetimeObject):makefile(directory+i+extention)
+	print('-'*20)
+	for i in makeStopPoint(datetimeObject):makefile(directory+i+extention)
+	print('-'*20)
+	print('After:Number of Files is',len(grepfile(directory,extention)))   #Check number of files
 
 
 
 
+
+'''
+TEST
+filefiller('C:/home/gnuplot/SAout/160717/')
+'''
 
 
 
