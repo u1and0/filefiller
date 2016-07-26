@@ -1,6 +1,13 @@
 # coding: utf-8
-version='filefiller.py ver3.0'
+version='filefiller.py ver3.1'
 '''
+
+__UPDATE3.1__
+一番最後にプリントしているdatetimeObjectはディレクトリ上のファイルをgrepしたものではないので
+再度ファイル数をgrepする
+↓
+grepする部分を関数化する
+
 
 __UPDATE3.0__
 yieldでファイル名吐き出し
@@ -42,19 +49,14 @@ d=datetime
 import glob
 
 
-directory='C:/home/gnuplot/SAout/160717/'
-extention='.txt'
+def grepfile(directory,extention):
+	fullpath=glob.glob(directory+'*'+extention)   #ファイル名をリストに格納
 
+	filename_without_extention=[i[len(directory):-1*len(extention)] for i in fullpath]   #ファイルベースネーム
 
-# __MAKE LIST__________________________
-fullpath=glob.glob(directory+'*'+extention)   #ファイル名をリストに格納
+	datetimeObject=[d.datetime.strptime(i,'%Y%m%d_%H%M%S') for i in filename_without_extention]   #要素がdatetime形式のリスト作成
 
-filename_without_extention=[i[len(directory):-1*len(extention)] for i in fullpath]   #ファイルベースネーム
-
-datetimeObject=[d.datetime.strptime(i,'%Y%m%d_%H%M%S') for i in filename_without_extention]   #要素がdatetime形式のリスト作成
-
-datetimeObjectHourmin=[int(i.strftime('%H%M')) for i in datetimeObject]   #要素が"時間と分"のリスト作成
-
+	return datetimeObject
 
 
 def makefile(filename):
@@ -132,6 +134,9 @@ def makeStopPoint():
 
 
 # __MAIN__________________________
+directory='C:/home/gnuplot/SAout/160717/'
+extention='.txt'
+datetimeObject=grepfile(directory,extention)
 print('Before\nNumber of Files is',len(datetimeObject))
 print('-'*20)
 for i in makeMiddlePoint():makefile(i)
@@ -140,6 +145,7 @@ for i in makeStartPoint():makefile(i)
 print('-'*20)
 for i in makeStopPoint():makefile(i)
 print('-'*20)
+# datetimeObject=grepfile(directory='C:/home/gnuplot/SAout/160717/',extention='.txt')
 print('After\nNumber of Files is',len(datetimeObject))
 
 
