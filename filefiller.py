@@ -1,6 +1,11 @@
 # coding: utf-8
-version='filefiller.py ver2.0'
+version='filefiller.py ver3.0'
 '''
+
+__UPDATE3.0__
+yieldでファイル名吐き出し
+そのたびにmakefile
+
 
 __UPDATE2.0__
 makefileの機能追加
@@ -24,8 +29,10 @@ datetimeObjectが5分間隔に並ぶように以下を行う
 	makeStartPoint()
 	makeMiddlePoint()
 	makeStopPoint()
+
 __TODO__
-None
+makefileのテスト
+実装
 '''
 
 
@@ -51,14 +58,13 @@ datetimeObjectHourmin=[int(i.strftime('%H%M')) for i in datetimeObject]   #要�
 
 
 def makefile(filename):
-	fullname=directory+filename+extention
-	with open(fullname,mode='w') as f:
-		c='# <This is DUMMY DATA made by %s>\n'% version
-		for i in range(1001):
-			c+=str(i).rjust(6)+('-1000.00'.rjust(11))*3+'\n'
-		c+='# <eof>\n'
-		f.write(c)
-
+		fullname=directory+filename+extention
+		with open(fullname,mode='w') as f:
+			c='# <This is DUMMY DATA made by %s>\n'% version
+			for i in range(1001):
+				c+=str(i).rjust(6)+('-1000.00'.rjust(11))*3+'\n'
+			c+='# <eof>\n'
+			f.write(c)
 
 
 
@@ -85,13 +91,13 @@ def makeMiddlePoint():
 	'''リスト内2個組で差分が6分未満になるように要素を作製'''
 	for two in chunks(datetimeObject,2):   #リストの2組ずつgenerate
 		if two[-1]-two[0]>=d.timedelta(minutes=6):
-			print(two[0],two[-1],two[-1]-two[0])
+			print('\n',two[0],'\n',two[-1],'\n','diff=',two[-1]-two[0],'\n')
 			where=datetimeObject.index(two[-1])
 			time=two[0]+d.timedelta(minutes=5)
 			datetimeObject.insert(where,time)   #調べた2くくりの要素間に+5分した要素を追加
 			print('Inserted',time,'next to',two[0])
-			makefile(time.strftime('%Y%m%d_%H%M%S'))
-	print('\nInsert element End\n')
+			yield time.strftime('%Y%m%d_%H%M%S')
+	print('\nmakeMiddlePoint End\n')
 
 
 
@@ -103,11 +109,11 @@ def makeStartPoint():
 		start=datetimeObject[0]   #始点を探す
 		if start.hour==0 and 0<=start.minute<5:   #始点の条件クリアでループ終了
 			print('\nFirst element is',start)
-			print('Insert start END\n')
+			print('makeStartPoint END\n')
 			break
 		datetimeObject.insert(0,start-d.timedelta(minutes=5))   #リストの最初に5分前の値をリストに格納
 		print('Inserted',datetimeObject[0])
-		makefile(datetimeObject[0].strftime('%Y%m%d_%H%M%S'))
+		yield datetimeObject[0].strftime('%Y%m%d_%H%M%S')
 
 
 def makeStopPoint():
@@ -116,20 +122,24 @@ def makeStopPoint():
 		stop=datetimeObject[-1]   #始点を探す
 		if stop.hour==23 and 55<=stop.minute<60:   #始点の条件クリアでループ終了
 			print('\nLast element is',stop)
-			print('insert stop END\n')
+			print('makeStopPoint END\n')
 			break
 		datetimeObject.append(stop+d.timedelta(minutes=5))   #リストの最初に5分前の値をリストに格納
 		print('Appended',datetimeObject[-1])
-		makefile(datetimeObject[-1].strftime('%Y%m%d_%H%M%S'))
+		yield datetimeObject[-1].strftime('%Y%m%d_%H%M%S')
 
 
 
 
 # __MAIN__________________________
 print('Before\nNumber of Files is',len(datetimeObject))
-makeStartPoint()
-makeMiddlePoint()
-makeStopPoint()
+print('-'*20)
+for i in makeMiddlePoint():makefile(i)
+print('-'*20)
+for i in makeStartPoint():makefile(i)
+print('-'*20)
+for i in makeStopPoint():makefile(i)
+print('-'*20)
 print('After\nNumber of Files is',len(datetimeObject))
 
 
