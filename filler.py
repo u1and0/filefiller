@@ -11,22 +11,25 @@ from more_itertools import *
 
 
 
-
-
 def fill(x):
 	'''
-	引数x(リスト形式)を二つずつに分ける
 	二つの要素間の差が<一定値>未満のときは
 	要素間を穴埋めする要素を入れる
 	'''
+	if two[-1]-two[0]>1:
+		x.insert(x.index(two[-1]),two[0]+1)
+		print('insert',two[0]+1)
+	else: print('OK')
+
+def pair(x):
+	'''
+	引数x(リスト形式)を二つずつのペアに分け、fill関数に渡す
+	'''
 	# x.append(x[-1]+1)
-	for two in list(pairwise(x)):
+	for two in list(pairwise(x)):   #2つずつにわける
 	# for two in chunks(x,2):
 		print(two)
-		if two[-1]-two[0]>1:
-			x.insert(x.index(two[-1]),two[0]+1)
-			print('insert',two[0]+1)
-		else: print('OK')
+		fill(two)
 	return x
 	# x.pop()
 
