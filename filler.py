@@ -1,11 +1,17 @@
-def chunks(l, n):
-	'''
-	l:リスト
-	n:数字
-	lからnずつgenerate
-	'''
-	for i in range(len(l)):
-		yield l[i:i + n]
+from itertools import *
+from more_itertools import *
+# def chunks(l, n):
+# 	'''
+# 	l:リスト
+# 	n:数字
+# 	lからnずつgenerate
+# 	'''
+# 	for i in range(len(l)):
+# 		yield l[i:i + n]
+
+
+
+
 
 def fill(x):
 	'''
@@ -24,8 +30,25 @@ def fill(x):
 
 
 
-x=[[0,3,4,5,5],[0,2,4,6,8,10],[0,5]]
-for i in x:
-	fill(i)
-	print(x)
-	print('\n')
+
+for zp in pairwise([0,3,4,5,9]):
+	zp=list(zp)
+	if zp[-1]-zp[0]>1:
+		zp.insert(zp.index(zp[-1]),zp[0]+1)
+		print('insert',zp[0]+1)
+print(zp)
+
+
+
+# liofli=[[0,3,4,5,9],[0,2,4,6,8,10],[0,5]]
+# for li in liofli:
+# 	print([i for i in pairwise(li)])
+
+
+
+
+
+# for i in x:
+# 	fill(i)
+# 	print(x)
+# 	print('\n')
