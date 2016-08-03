@@ -37,6 +37,7 @@ def pair(x):
 		if two[-1]-two[0]>1:
 			for i in range(two[0]+1,two[-1]):   #rangeの逆順コピーを取り出す
 				x.insert(x.index(two[-1]),i)
+				print('insert',i)
 		else:print('OK!')
 	return x
 	# x.pop()
@@ -61,8 +62,14 @@ def pair(x):
 
 
 
-print(pair([6,7,11]))
-print(pair([6,11]))
-print(pair([6,11,12,13,16]))
-# print([i for i in fill([1,2,4,6,8,11])])
-# print(x)
+# print(pair([6,7,11]))
+# print(pair([6,11]))
+# print(pair([6,11,12,13,16]))
+
+
+
+
+li=[[1,5,6],[1,3],[0,1,8,11,16],[1,6,8,9,10,11,15]]
+for x in li:
+	print(pair(x))
+	# print(bool(pair(x)==list(range(x[0],x[-1]+1))))
