@@ -11,14 +11,19 @@ from more_itertools import *
 
 
 
-def fill(x):
+def fill(two):
 	'''
 	二つの要素間の差が<一定値>未満のときは
 	要素間を穴埋めする要素を入れる
 	'''
 	if two[-1]-two[0]>1:
-		x.insert(x.index(two[-1]),two[0]+1)
-		print('insert',two[0]+1)
+		# print(range(two[0],two[-1])))
+		for i in range(two[0]+1,two[-1]):   #rangeの逆順コピーを取り出す
+			insert
+			yield i
+		# while two[-1]
+		# 	x.insert(x.index(two[-1]),two[0]+1)
+		# print('insert',two[0]+1)
 	else: print('OK')
 
 def pair(x):
@@ -29,7 +34,10 @@ def pair(x):
 	for two in list(pairwise(x)):   #2つずつにわける
 	# for two in chunks(x,2):
 		print(two)
-		fill(two)
+		if two[-1]-two[0]>1:
+			for i in range(two[0]+1,two[-1]):   #rangeの逆順コピーを取り出す
+				x.insert(x.index(two[-1]),i)
+		else:print('OK!')
 	return x
 	# x.pop()
 
@@ -53,6 +61,8 @@ def pair(x):
 
 
 
-
-print([i for i in fill([1,2,4,6,8,11])])
+print(pair([6,7,11]))
+print(pair([6,11]))
+print(pair([6,11,12,13,16]))
+# print([i for i in fill([1,2,4,6,8,11])])
 # print(x)
