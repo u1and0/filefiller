@@ -8,6 +8,11 @@ def chunks(l, n):
 		yield l[i:i + n]
 
 def fill(x):
+	'''
+	引数x(リスト形式)を二つずつに分ける
+	二つの要素間の差が<一定値>未満のときは
+	要素間を穴埋めする要素を入れる
+	'''
 	x.append(x[-1]+1)
 	for two in chunks(x,2):
 		print(two)
@@ -19,6 +24,8 @@ def fill(x):
 
 
 
-x=[0,3,4,5,5]
-fill(x)
-print(x)
+x=[[0,3,4,5,5],[0,2,4,6,8,10],[0,5]]
+for i in x:
+	fill(i)
+	print(x)
+	print('\n')
