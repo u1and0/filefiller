@@ -19,24 +19,27 @@ def fill(x):
 	二つの要素間の差が<一定値>未満のときは
 	要素間を穴埋めする要素を入れる
 	'''
-	x.append(x[-1]+1)
-	for two in chunks(x,2):
+	# x.append(x[-1]+1)
+	for two in list(pairwise(x)):
+	# for two in chunks(x,2):
 		print(two)
 		if two[-1]-two[0]>1:
 			x.insert(x.index(two[-1]),two[0]+1)
 			print('insert',two[0]+1)
-	x.pop()
+		else: print('OK')
+	return x
+	# x.pop()
 
 
 
 
 
-for zp in pairwise([0,3,4,5,9]):
-	zp=list(zp)
-	if zp[-1]-zp[0]>1:
-		zp.insert(zp.index(zp[-1]),zp[0]+1)
-		print('insert',zp[0]+1)
-print(zp)
+# for zp in pairwise([0,3,4,5,9]):
+# 	zp=list(zp)
+# 	if zp[-1]-zp[0]>1:
+# 		zp.insert(zp.index(zp[-1]),zp[0]+1)
+# 		print('insert',zp[0]+1)
+# print(zp)
 
 
 
@@ -48,7 +51,5 @@ print(zp)
 
 
 
-# for i in x:
-# 	fill(i)
-# 	print(x)
-# 	print('\n')
+print([i for i in fill([1,2,4,6,8,11])])
+# print(x)
