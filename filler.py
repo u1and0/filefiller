@@ -17,8 +17,8 @@ def fill(li,delta):
 	'''
 	引数:
 		li:リスト
-		delta:int
-	戻り値：編集を加えた、引数と同じリスト
+		delta:intまたはdatetime
+	戻り値：twoの間に入れる値をyield
 	'''
 	for two in list(pairwise(li)):   #liの中身を2つずつにわける
 		print(two)

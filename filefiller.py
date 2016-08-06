@@ -80,21 +80,21 @@ def makefile(fullpath):
 
 
 
-def chunks(l, n):
-	'''
-	l:リスト
-	n:数字
-	lからnずつgenerate
-	'''
-	for i in range(len(l)):
-		yield l[i:i + n]
+# def chunks(l, n):
+# 	'''
+# 	l:リスト
+# 	n:数字
+# 	lからnずつgenerate
+# 	'''
+# 	for i in range(len(l)):
+# 		yield l[i:i + n]
 
-'''chunks TEST
-ll=[1,5,23,6,3,6,7]
-print(list(chunks(ll,2)))
-# Excute Result
-# [[1, 5], [5, 23], [23, 6], [6, 3], [3, 6], [6, 7], [7]]
-'''
+# '''chunks TEST
+# ll=[1,5,23,6,3,6,7]
+# print(list(chunks(ll,2)))
+# # Excute Result
+# # [[1, 5], [5, 23], [23, 6], [6, 3], [3, 6], [6, 7], [7]]
+# '''
 
 
 # def makeMiddlePoint(li,delta):
@@ -123,73 +123,50 @@ print(list(chunks(ll,2)))
 
 
 
-# def makeMiddlePoint():
-# 	'''リスト内2個組で差分が6分未満になるように要素を作製'''
-# 	for two in chunks(datetimeObject,2):   #リストの2組ずつgenerate
-# 		print(two)
-# 		if two[-1]-two[0]>=timedelta(minutes=6):
-# 			print('\n',two[0],'\n',two[-1],'\n','diff=',two[-1]-two[0])
-# 			where=datetimeObject.index(two[-1])
-# 			time=two[0]+timedelta(minutes=5)
-# 			datetimeObject.insert(where,time)   #調べた2くくりの要素間に+5分した要素を追加
-# 			print('Inserted',time)
-# 			yield time.strftime('%Y%m%d_%H%M%S')
-# 	print('\nmakeMiddlePoint END\n')
-
-# def makeMiddlePoint():
-# 	'''リスト内2個組で差分が6分未満になるように要素を作製'''
-# 	while datetimeObject[-1]-datetimeObject[-2]>=timedelta(minutes=6):
-# 	# if datetimeObject[-2].hour==23 and 50<=datetimeObject[-2].minute<55:break
-# 	for two in chunks(datetimeObject,2):
-# 		print(two)
-# 		where=datetimeObject.index(two[-1])
-# 		time=two[0]+timedelta(minutes=5)
-# 		datetimeObject.insert(where,time)   #調べた2くくりの要素間に+5分した要素を追加
-# 		print('Inserted',time)
-# 		yield time.strftime('%Y%m%d_%H%M%S')
-# 	print('\nmakeMiddlePoint End\n')
+def makeMiddlePoint(li,delta):
+	'''
+	引数:
+		li:リスト
+		delta:datetime
+	戻り値：twoの間に入れる値をyield
+	'''
+	for two in list(pairwise(li)):   #liの中身を2つずつにわける
+		if two[-1]-two[0]>=delta +timedelta(minutes=1):   #抜き出したタプルの要素の差がdelta上であれば
+			print('\nLack between %s and %s'% (two[0],two[1]))
+			for i in pltd.drange(two[0]+delta,two[-1],delta):
+				li.insert(li.index(two[-1]),pltd.num2date(i))   #タプルの要素間の場所にdeltaずつ増やした値を入れる
+				print('insert',pltd.num2date(i))
+				yield pltd.num2date(i).strftime('%Y%m%d_%H%M%S')
+	print('\nThere is No point to insert')
+	print('makeMiddlePoint END\n')
 
 
 
 
-	# 	for two in chunks(datetimeObject,2):   #リストの2組ずつgenerate
-	# 		if two[-1]-two[0]>=timedelta(minutes=6):
-	# 			print('\n',two[0],'\n',two[-1],'\n','diff=',two[-1]-two[0],'\n')
-	# 			where=datetimeObject.index(two[-1])
-	# 			time=two[0]+timedelta(minutes=5)
-	# 			datetimeObject.insert(where,time)   #調べた2くくりの要素間に+5分した要素を追加
-	# 			print('Inserted',time)
-	# 			yield time.strftime('%Y%m%d_%H%M%S')
-	# print('\nmakeMiddlePoint End\n')
-
-
-
-
-
-def makeStartPoint():
+def makeStartPoint(li):
 	'''始点要素の作製'''
 	while True :
-		start=datetimeObject[0]   #始点を探す
+		start=li[0]   #始点を探す
 		if start.hour==0 and 0<=start.minute<5:   #始点の条件クリアでループ終了
 			print('\nFirst element is',start)
 			print('makeStartPoint END\n')
 			break
-		datetimeObject.insert(0,start-timedelta(minutes=5))   #リストの最初に5分前の値をリストに格納
-		print('Inserted',datetimeObject[0])
-		yield datetimeObject[0].strftime('%Y%m%d_%H%M%S')
+		li.insert(0,start-timedelta(minutes=5))   #リストの最初に5分前の値をリストに格納
+		print('Inserted',li[0])
+		yield li[0].strftime('%Y%m%d_%H%M%S')
 
 
-def makeStopPoint():
+def makeStopPoint(li):
 	'''終点要素の作製'''
 	while True :
-		stop=datetimeObject[-1]   #始点を探す
-		if stop.hour==23 and 55<=stop.minute<60:   #始点の条件クリアでループ終了
+		stop=li[-1]   #終点を探す
+		if stop.hour==23 and 55<=stop.minute<60:   #終点の条件クリアでループ終了
 			print('\nLast element is',stop)
 			print('makeStopPoint END\n')
 			break
-		datetimeObject.append(stop+timedelta(minutes=5))   #リストの最初に5分前の値をリストに格納
-		print('Appended',datetimeObject[-1])
-		yield datetimeObject[-1].strftime('%Y%m%d_%H%M%S')
+		li.append(stop+timedelta(minutes=5))   #リストの最初に5分前の値をリストに格納
+		print('Appended',li[-1])
+		yield li[-1].strftime('%Y%m%d_%H%M%S')
 
 
 
@@ -200,7 +177,7 @@ def filefiller(directory,extention='.txt'):
 	datetimeObject=grepfile(directory,extention)
 	print('Before:Number of Files is',len(datetimeObject))   #Check number of files
 	print('-'*20)
-	for i in makeMiddlePoint(datetimeObject):makefile(directory+i+extention)
+	for i in makeMiddlePoint(datetimeObject,timedelta(minutes=5)):makefile(directory+i+extention)
 	print('-'*20)
 	for i in makeStartPoint(datetimeObject):makefile(directory+i+extention)
 	print('-'*20)
@@ -214,28 +191,28 @@ def filefiller(directory,extention='.txt'):
 
 '''
 TEST
+'''
 filefiller('C:/home/gnuplot/SAout/160717/')
-'''
 
-'''
-TEST2
-'''
-directory='C:/home/gnuplot/SAout/160717/'
-extention='.txt'
-datetimeObject=grepfile(directory,extention)
-print('Before',len(datetimeObject))
-
-function=[
-					'makeMiddlePoint()',
-					'makeStartPoint()',
-					'makeStopPoint()']
-for func in function:
-	for filename in eval(func):
-		pass
-		# makefile(directory+filename+extention)
-
+# '''
+# TEST2
+# '''
+# directory='C:/home/gnuplot/SAout/160717/'
+# extention='.txt'
 # datetimeObject=grepfile(directory,extention)
-print('After',len(datetimeObject))
+# print('Before',len(datetimeObject))
+
+# function=[
+# 					'makeMiddlePoint(datetimeObject,timedelta(minutes=5))',
+# 					'makeStartPoint()',
+# 					'makeStopPoint()']
+# for func in function:
+# 	for filename in eval(func):
+# 		pass
+# 		# makefile(directory+filename+extention)
+
+# # datetimeObject=grepfile(directory,extention)
+# print('After',len(datetimeObject))
 
 
 
