@@ -50,9 +50,14 @@ makeMiddlePoint()が不完全
 
 
 import numpy as np
-import datetime
-d=datetime
 import glob
+from itertools import *
+from more_itertools import *
+from datetime import datetime, timedelta
+import time
+import matplotlib.dates as pltd
+
+
 
 
 def grepfile(directory,extention):
@@ -60,7 +65,7 @@ def grepfile(directory,extention):
 
 	filename_without_extention=[i[len(directory):-1*len(extention)] for i in fullpath]   #ファイルベースネーム
 
-	datetimeObject=[d.datetime.strptime(i,'%Y%m%d_%H%M%S') for i in filename_without_extention]   #要素がdatetime形式のリスト作成
+	datetimeObject=[datetime.strptime(i,'%Y%m%d_%H%M%S') for i in filename_without_extention]   #要素がdatetime形式のリスト作成
 
 	return datetimeObject
 
@@ -92,29 +97,53 @@ print(list(chunks(ll,2)))
 '''
 
 
+# def makeMiddlePoint(li,delta):
+# 	'''
+# 	引数:
+# 		li:リスト
+# 		delta:int
+# 	戻り値：編集を加えた、引数と同じリスト
+# 	'''
+# 	for two in list(pairwise(li)):   #liの中身を2つずつにわける
+# 		print(two)
+# 		if two[-1]-two[0]>delta+timedelta:   #抜き出したタプルの要素の差がdelta上であれば
+# 			if type(two[0])==datetime:
+# 				for i in pltd.drange(two[0]+delta,two[-1],delta):
+# 					li.insert(li.index(two[-1]),pltd.num2date(i))   #タプルの要素間の場所にdeltaずつ増やした値を入れる
+# 					# print('insert',pltd.num2date(i))
+# 					yield pltd.num2date(i)
+# 			else :
+# 				for i in range(two[0]+delta,two[-1],delta):
+# 					li.insert(li.index(two[-1]),i)   #タプルの要素間の場所にdeltaずつ増やした値を入れる
+# 					# print('insert',i)
+# 					yield i
 
 
-def makeMiddlePoint():
-	'''リスト内2個組で差分が6分未満になるように要素を作製'''
-	for two in chunks(datetimeObject,2):   #リストの2組ずつgenerate
-		print(two)
-		if two[-1]-two[0]>=d.timedelta(minutes=6):
-			print('\n',two[0],'\n',two[-1],'\n','diff=',two[-1]-two[0])
-			where=datetimeObject.index(two[-1])
-			time=two[0]+d.timedelta(minutes=5)
-			datetimeObject.insert(where,time)   #調べた2くくりの要素間に+5分した要素を追加
-			print('Inserted',time)
-			yield time.strftime('%Y%m%d_%H%M%S')
-	print('\nmakeMiddlePoint END\n')
+
+
+
 
 # def makeMiddlePoint():
 # 	'''リスト内2個組で差分が6分未満になるように要素を作製'''
-# 	while datetimeObject[-1]-datetimeObject[-2]>=d.timedelta(minutes=6):
+# 	for two in chunks(datetimeObject,2):   #リストの2組ずつgenerate
+# 		print(two)
+# 		if two[-1]-two[0]>=timedelta(minutes=6):
+# 			print('\n',two[0],'\n',two[-1],'\n','diff=',two[-1]-two[0])
+# 			where=datetimeObject.index(two[-1])
+# 			time=two[0]+timedelta(minutes=5)
+# 			datetimeObject.insert(where,time)   #調べた2くくりの要素間に+5分した要素を追加
+# 			print('Inserted',time)
+# 			yield time.strftime('%Y%m%d_%H%M%S')
+# 	print('\nmakeMiddlePoint END\n')
+
+# def makeMiddlePoint():
+# 	'''リスト内2個組で差分が6分未満になるように要素を作製'''
+# 	while datetimeObject[-1]-datetimeObject[-2]>=timedelta(minutes=6):
 # 	# if datetimeObject[-2].hour==23 and 50<=datetimeObject[-2].minute<55:break
 # 	for two in chunks(datetimeObject,2):
 # 		print(two)
 # 		where=datetimeObject.index(two[-1])
-# 		time=two[0]+d.timedelta(minutes=5)
+# 		time=two[0]+timedelta(minutes=5)
 # 		datetimeObject.insert(where,time)   #調べた2くくりの要素間に+5分した要素を追加
 # 		print('Inserted',time)
 # 		yield time.strftime('%Y%m%d_%H%M%S')
@@ -124,10 +153,10 @@ def makeMiddlePoint():
 
 
 	# 	for two in chunks(datetimeObject,2):   #リストの2組ずつgenerate
-	# 		if two[-1]-two[0]>=d.timedelta(minutes=6):
+	# 		if two[-1]-two[0]>=timedelta(minutes=6):
 	# 			print('\n',two[0],'\n',two[-1],'\n','diff=',two[-1]-two[0],'\n')
 	# 			where=datetimeObject.index(two[-1])
-	# 			time=two[0]+d.timedelta(minutes=5)
+	# 			time=two[0]+timedelta(minutes=5)
 	# 			datetimeObject.insert(where,time)   #調べた2くくりの要素間に+5分した要素を追加
 	# 			print('Inserted',time)
 	# 			yield time.strftime('%Y%m%d_%H%M%S')
@@ -145,7 +174,7 @@ def makeStartPoint():
 			print('\nFirst element is',start)
 			print('makeStartPoint END\n')
 			break
-		datetimeObject.insert(0,start-d.timedelta(minutes=5))   #リストの最初に5分前の値をリストに格納
+		datetimeObject.insert(0,start-timedelta(minutes=5))   #リストの最初に5分前の値をリストに格納
 		print('Inserted',datetimeObject[0])
 		yield datetimeObject[0].strftime('%Y%m%d_%H%M%S')
 
@@ -158,7 +187,7 @@ def makeStopPoint():
 			print('\nLast element is',stop)
 			print('makeStopPoint END\n')
 			break
-		datetimeObject.append(stop+d.timedelta(minutes=5))   #リストの最初に5分前の値をリストに格納
+		datetimeObject.append(stop+timedelta(minutes=5))   #リストの最初に5分前の値をリストに格納
 		print('Appended',datetimeObject[-1])
 		yield datetimeObject[-1].strftime('%Y%m%d_%H%M%S')
 
@@ -196,7 +225,10 @@ extention='.txt'
 datetimeObject=grepfile(directory,extention)
 print('Before',len(datetimeObject))
 
-function=['makeMiddlePoint()','makeStartPoint()','makeStopPoint()']
+function=[
+					'makeMiddlePoint()',
+					'makeStartPoint()',
+					'makeStopPoint()']
 for func in function:
 	for filename in eval(func):
 		pass
