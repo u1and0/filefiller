@@ -80,49 +80,6 @@ def makefile(fullpath):
 
 
 
-# def chunks(l, n):
-# 	'''
-# 	l:リスト
-# 	n:数字
-# 	lからnずつgenerate
-# 	'''
-# 	for i in range(len(l)):
-# 		yield l[i:i + n]
-
-# '''chunks TEST
-# ll=[1,5,23,6,3,6,7]
-# print(list(chunks(ll,2)))
-# # Excute Result
-# # [[1, 5], [5, 23], [23, 6], [6, 3], [3, 6], [6, 7], [7]]
-# '''
-
-
-# def makeMiddlePoint(li,delta):
-# 	'''
-# 	引数:
-# 		li:リスト
-# 		delta:int
-# 	戻り値：編集を加えた、引数と同じリスト
-# 	'''
-# 	for two in list(pairwise(li)):   #liの中身を2つずつにわける
-# 		print(two)
-# 		if two[-1]-two[0]>delta+timedelta:   #抜き出したタプルの要素の差がdelta上であれば
-# 			if type(two[0])==datetime:
-# 				for i in pltd.drange(two[0]+delta,two[-1],delta):
-# 					li.insert(li.index(two[-1]),pltd.num2date(i))   #タプルの要素間の場所にdeltaずつ増やした値を入れる
-# 					# print('insert',pltd.num2date(i))
-# 					yield pltd.num2date(i)
-# 			else :
-# 				for i in range(two[0]+delta,two[-1],delta):
-# 					li.insert(li.index(two[-1]),i)   #タプルの要素間の場所にdeltaずつ増やした値を入れる
-# 					# print('insert',i)
-# 					yield i
-
-
-
-
-
-
 def makeMiddlePoint(li,delta):
 	'''
 	引数:
@@ -137,12 +94,58 @@ def makeMiddlePoint(li,delta):
 			for i in pltd.drange(two[0]+delta,two[-1],delta):
 				li.insert(li.index(two[-1]),pltd.num2date(i))   #タプルの要素間の場所にdeltaずつ増やした値を入れる
 				print('insert',pltd.num2date(i))
-
-				print(li)
-
 				yield pltd.num2date(i).strftime('%Y%m%d_%H%M%S')
 	print('\nThere is No point to insert')
 	print('makeMiddlePoint END\n')
+
+
+
+
+
+
+'''try-except-else　で条件に見合うまでfor文に戻ろうと思ったやつ'''
+# def makeMiddlePoint(li,delta):
+# 	'''
+# 	引数:
+# 		li:リスト
+# 		delta:datetime
+# 	戻り値：twoの間に入れる値をyield
+# 	'''
+# 	# flag=True
+# 	while True:
+# 		try:
+# 			for two in list(pairwise(li)):   #liの中身を2つずつにわけて差分を調べる
+# 				if two[-1]-two[0]>=delta +timedelta(minutes=1):   #抜き出したタプルの要素の差がdelta以上であれば
+# 					print('\nLack between %s and %s'% (two[0],two[1]))
+# 					print('Substract',abs(two[0]-two[1]))
+# 					for i in pltd.drange(two[0]+delta,two[-1],delta):
+# 						li.insert(li.index(two[-1]),pltd.num2date(i))   #タプルの要素間の場所にdeltaずつ増やした値を入れる
+# 						print('insert',pltd.num2date(i))
+
+# 						# print(li)
+
+# 						yield pltd.num2date(i).strftime('%Y%m%d_%H%M%S')   #insertした値を外に渡して
+# 						raise   #yieldしたらもう一度pairwiseにもどる
+# 		except:
+# 			print('TryAgain')
+# 			# pass
+# 		else:   #一度もraiseがでない(差分がdelta以上にならない)ければ
+# 			# flag=False   #flagをFalseにしてwhile True抜ける
+# 			print('\nThere is No point to insert')
+# 			print('makeMiddlePoint END\n')
+# 			break   #if節に一度も引っかからなければflagをFalseにしてwhileから抜ける
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -181,11 +184,14 @@ def filefiller(directory,extention='.txt'):
 	datetimeObject=grepfile(directory,extention)
 	print('Before:Number of Files is',len(datetimeObject))   #Check number of files
 	print('-'*20)
-	for i in makeMiddlePoint(datetimeObject,timedelta(minutes=5)):makefile(directory+i+extention)
+	for i in makeMiddlePoint(datetimeObject,timedelta(minutes=5)):
+		makefile(directory+i+extention)
 	print('-'*20)
-	for i in makeStartPoint(datetimeObject):makefile(directory+i+extention)
+	for i in makeStartPoint(datetimeObject):
+		makefile(directory+i+extention)
 	print('-'*20)
-	for i in makeStopPoint(datetimeObject):makefile(directory+i+extention)
+	for i in makeStopPoint(datetimeObject):
+		makefile(directory+i+extention)
 	print('-'*20)
 	print('After:Number of Files is',len(grepfile(directory,extention)))   #Check number of files
 
@@ -195,28 +201,30 @@ def filefiller(directory,extention='.txt'):
 
 '''
 TEST
-'''
 filefiller('C:/home/gnuplot/SAout/160717/')
+'''
 
-# '''
-# TEST2
-# '''
-# directory='C:/home/gnuplot/SAout/160717/'
-# extention='.txt'
+
+
+'''
+TEST2
+directory='C:/home/gnuplot/SAout/160717/'
+extention='.txt'
+datetimeObject=grepfile(directory,extention)
+print('Before',len(datetimeObject))
+
+function=[
+					'makeMiddlePoint(datetimeObject,timedelta(minutes=5))',
+					'makeStartPoint()',
+					'makeStopPoint()']
+for func in function:
+	for filename in eval(func):
+		pass
+		# makefile(directory+filename+extention)
+
 # datetimeObject=grepfile(directory,extention)
-# print('Before',len(datetimeObject))
-
-# function=[
-# 					'makeMiddlePoint(datetimeObject,timedelta(minutes=5))',
-# 					'makeStartPoint()',
-# 					'makeStopPoint()']
-# for func in function:
-# 	for filename in eval(func):
-# 		pass
-# 		# makefile(directory+filename+extention)
-
-# # datetimeObject=grepfile(directory,extention)
-# print('After',len(datetimeObject))
+print('After',len(datetimeObject))
+'''
 
 
 
