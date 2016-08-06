@@ -133,9 +133,13 @@ def makeMiddlePoint(li,delta):
 	for two in list(pairwise(li)):   #liの中身を2つずつにわける
 		if two[-1]-two[0]>=delta +timedelta(minutes=1):   #抜き出したタプルの要素の差がdelta上であれば
 			print('\nLack between %s and %s'% (two[0],two[1]))
+			print('Substract',abs(two[0]-two[1]))
 			for i in pltd.drange(two[0]+delta,two[-1],delta):
 				li.insert(li.index(two[-1]),pltd.num2date(i))   #タプルの要素間の場所にdeltaずつ増やした値を入れる
 				print('insert',pltd.num2date(i))
+
+				print(li)
+
 				yield pltd.num2date(i).strftime('%Y%m%d_%H%M%S')
 	print('\nThere is No point to insert')
 	print('makeMiddlePoint END\n')
