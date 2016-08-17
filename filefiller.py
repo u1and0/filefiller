@@ -182,15 +182,16 @@ def makeStopPoint(li):
 
 def filefiller(directory,extention='.txt'):
 	datetimeObject=grepfile(directory,extention)
+	print('\n',directory,'内のファイル数を調整します','\n')
 	print('Before:Number of Files is',len(datetimeObject))   #Check number of files
 	print('-'*20)
-	for i in makeMiddlePoint(datetimeObject,timedelta(minutes=5)):
+	for i in makeMiddlePoint(datetimeObject,timedelta(minutes=5)):   #5分間隔でデータを挿入
 		makefile(directory+i+extention)
 	print('-'*20)
-	for i in makeStartPoint(datetimeObject):
+	for i in makeStartPoint(datetimeObject):   #始点を作製
 		makefile(directory+i+extention)
 	print('-'*20)
-	for i in makeStopPoint(datetimeObject):
+	for i in makeStopPoint(datetimeObject):   #終点を作製
 		makefile(directory+i+extention)
 	print('-'*20)
 	print('After:Number of Files is',len(grepfile(directory,extention)))   #Check number of files
