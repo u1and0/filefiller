@@ -1,6 +1,21 @@
 # coding: utf-8
 version='filefiller.py ver3.2'
 '''
+__USAGE__
+directoryにはtxtファイルが詰まったディレクトリ名(最後に/必須)
+extentionには拡張子
+以上を入れてbuild
+
+__INTRODUCTION__
+あるディレクトリ内のtxtファイル(ファイル名=yyyymmdd_HHMMSS.txt)が00時00分～00時04分に始まり、23時55分～23時59分に終わるようにファイルを追加していく
+
+__ACTION__
+変数セット
+datetimeObjectというリスト作成
+datetimeObjectが5分間隔に並ぶように以下を行う
+	makeStartPoint()
+	makeMiddlePoint()
+	makeStopPoint()
 
 __UPDATE3.2__
 外部ファイルから呼び出せるようにMAINも関数化
@@ -24,22 +39,6 @@ makefileの機能追加
 
 __UPDATE1.0__
 First commit
-
-__USAGE__
-directoryにはtxtファイルが詰まったディレクトリ名(最後に/必須)
-extentionには拡張子
-以上を入れてbuild
-
-__INTRODUCTION__
-あるディレクトリ内のtxtファイル(ファイル名=yyyymmdd_HHMMSS.txt)が00時00分～00時04分に始まり、23時55分～23時59分に終わるようにファイルを追加していく
-
-__ACTION__
-変数セット
-datetimeObjectというリスト作成
-datetimeObjectが5分間隔に並ぶように以下を行う
-	makeStartPoint()
-	makeMiddlePoint()
-	makeStopPoint()
 
 __TODO__
 makeMiddlePoint()が不完全
