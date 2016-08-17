@@ -193,7 +193,15 @@ def filefiller(directory,extention='.txt'):
 	for i in makeStopPoint(datetimeObject):   #終点を作製
 		makefile(directory+i+extention)
 	print('-'*20)
-	print('After:Number of Files is',len(grepfile(directory,extention)))   #Check number of files
+	try:
+		if not len(grepfile(directory,extention))==288:raise ValueError
+	except ValueError:
+		print('ファイル数が288個になってません！処理を中断します。')
+		print('生データを編集して、"%s/code"内にあるgpファイルを手動で動かしてください。'% out1+when)
+	else:
+		pass
+	finally:
+		print('After:Number of Files is',len(grepfile(directory,extention)))   #Check number of files
 
 
 
