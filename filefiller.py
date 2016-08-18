@@ -207,23 +207,22 @@ def filefiller(directory,extention='.txt'):
 
 def filecheck(directory):
 	'''
-	ファイル数288>>>何もせずfilefiller.py終了
-	ファイル数288未満>>>filefillerで288になるまで穴埋め
-	ファイル数288より多い>>>エラー吐き出して処理中断
+	ファイル数288 => 何もせずfilefiller.py終了
+	ファイル数288未満 => filefillerで288になるまで穴埋め
+	ファイル数288より多い => エラー吐き出して処理中断
 	'''
 	filenum=288
-	li=glob.glob(directory+'*'+'.txt')
-	try:
-		if len(li)>filenum:
-			raise ValueError
-	except ValueError:
-		print('ファイル数が%d個以上！処理を中断します。'% filenum)
-		print('生データを編集して、"%s/code"内にあるgpファイルを手動で動かしてください。'% out1+when)
+	while not len(glob.glob(directory+'*'+'.txt'))==filenum:   #globして288個ならココは実行しない
+		try:
+			if len(glob.glob(directory+'*'+'.txt'))>filenum:
+				raise ValueError
+		except ValueError:
+			print('ファイル数が%d個以上！処理を中断します。'% filenum)
+			print('生データを編集して、"%s/code"内にあるgpファイルを手動で動かしてください。'% out1+when)
+		else:
+			if len(glob.glob(directory+'*'+'.txt'))<filenum:
+				filefiller(directory)
 	else:
-		if len(li)<filenum:
-			filefiller(directory)
-		else:pass
-	finally:
 		print('After:Number of Files is',len(globfile(directory,extention='.txt')))   #Check number of files
 		print('ファイル数を288個にできました。グラフ化処理を続行します。')
 
