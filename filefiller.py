@@ -225,6 +225,7 @@ def filecheck(directory):
 		else:pass
 	finally:
 		print('After:Number of Files is',len(globfile(directory,extention='.txt')))   #Check number of files
+		print('ファイル数を288個にできました。グラフ化処理を続行します。')
 
 
 
