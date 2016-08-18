@@ -59,7 +59,11 @@ import matplotlib.dates as pltd
 
 
 
-def grepfile(directory,extention):
+def globfile(directory,extention):
+	'''
+	ディレクトリを引数に
+	%Y%m%d_%H%M%S形式のファイルベースネーム返す
+	'''
 	fullpath=glob.glob(directory+'*'+extention)   #ファイル名をリストに格納
 
 	filename_without_extention=[i[len(directory):-1*len(extention)] for i in fullpath]   #ファイルベースネーム
@@ -70,6 +74,7 @@ def grepfile(directory,extention):
 
 
 def makefile(fullpath):
+	'''ダミーデータ書き込む'''
 	with open(fullpath,mode='w') as f:
 		c='# <This is DUMMY DATA made by %s>\n'% version
 		for i in range(1001):
@@ -176,11 +181,16 @@ def makeStopPoint(li):
 
 
 
-
 # __MAIN__________________________
 
 def filefiller(directory,extention='.txt'):
-	datetimeObject=grepfile(directory,extention)
+	'''
+	file数を288まで増やす
+	makeMiddlePoint:間の穴あき埋める
+	makeStartPoint:最初の要素から00:00に向けて5分間隔でデータ作る
+	makeStopPoint:最後の要素から23:59に向けて5分間隔でデータ作る
+	'''
+	datetimeObject=globfile(directory,extention)
 	print('\n',directory,'内のファイル数を調整します','\n')
 	print('Before:Number of Files is',len(datetimeObject))   #Check number of files
 	print('-'*20)
@@ -193,17 +203,28 @@ def filefiller(directory,extention='.txt'):
 	for i in makeStopPoint(datetimeObject):   #終点を作製
 		makefile(directory+i+extention)
 	print('-'*20)
+
+
+def filecheck(directory):
+	'''
+	ファイル数288>>>何もせずfilefiller.py終了
+	ファイル数288未満>>>filefillerで288になるまで穴埋め
+	ファイル数288より多い>>>エラー吐き出して処理中断
+	'''
+	filenum=288
+	li=glob.glob(directory+'*'+'.txt')
 	try:
-		if not len(grepfile(directory,extention))==288:raise ValueError
+		if len(li)>filenum:
+			raise ValueError
 	except ValueError:
-		print('ファイル数が288個になってません！処理を中断します。')
+		print('ファイル数が%d個以上！処理を中断します。'% filenum)
 		print('生データを編集して、"%s/code"内にあるgpファイルを手動で動かしてください。'% out1+when)
 	else:
-		pass
+		if len(li)<filenum:
+			filefiller(directory)
+		else:pass
 	finally:
-		print('After:Number of Files is',len(grepfile(directory,extention)))   #Check number of files
-
-
+		print('After:Number of Files is',len(globfile(directory,extention='.txt')))   #Check number of files
 
 
 
@@ -218,7 +239,7 @@ filefiller('C:/home/gnuplot/SAout/160717/')
 TEST2
 directory='C:/home/gnuplot/SAout/160717/'
 extention='.txt'
-datetimeObject=grepfile(directory,extention)
+datetimeObject=globfile(directory,extention)
 print('Before',len(datetimeObject))
 
 function=[
@@ -230,7 +251,7 @@ for func in function:
 		pass
 		# makefile(directory+filename+extention)
 
-# datetimeObject=grepfile(directory,extention)
+# datetimeObject=globfile(directory,extention)
 print('After',len(datetimeObject))
 '''
 
